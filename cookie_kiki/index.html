@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Cookie Kiki</title>
+  </head>
+
+  <body class="bg-[#fffcf0] font-sans text-center p-8 min-h-screen flex flex-col items-center">
+    <div id="gameContainer">
+      <h1 class="text-[#8b4513] text-4xl font-bold mb-4">Cookie Kiki</h1>
+      
+      <p id="scoreShow" class="text-5xl font-bold text-[#5d2e0a] mb-8">
+        <span id="score">0</span> Cookies
+      </p>
+      
+      <button id="cookieBtn" class="text-[12rem] bg-transparent border-none cursor-pointer transition-transform duration-75 hover:scale-105 active:scale-95 select-none outline-none">
+        🍪
+      </button> 
+    </div>
+
+    <script>
+      let cookies = 0;
+      let grandmas = 0;
+      const GRANDMA_COST = 20;
+      const GRANDMA_CPS = 1;
+
+      const cookieBtn = document.getElementById("cookieBtn");
+      const scoreDisplay = document.getElementById("score");
+
+      function updateUI() {
+        scoreDisplay.textContent = Math.floor(cookies);
+      }
+
+      function handleCookieClick() {
+        cookies += 1;
+        updateUI();
+      }
+
+      setInterval(function () {
+        cookies += grandmas * GRANDMA_CPS;
+        updateUI();
+      }, 1000);
+
+      // Deduct 1 cookie every 5 seconds if cookies > 0
+      setInterval(function () {
+        if (cookies > 0) {
+          cookies -= 1;
+          updateUI();
+        }
+      }, 5000);
+
+      cookieBtn.addEventListener("click", handleCookieClick);
+      
+      updateUI();
+    </script>
+  </body>
+</html>
