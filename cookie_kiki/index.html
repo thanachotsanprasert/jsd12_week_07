@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Cookie Kiki</title>
+    <style>
+      @keyframes fall {
+        to { transform: translateY(105vh) rotate(360deg); }
+      }
+      .cookie-rain {
+        position: fixed;
+        top: -5vh;
+        font-size: 2rem;
+        user-select: none;
+        pointer-events: none;
+        animation: fall linear forwards;
+        z-index: 50;
+      }
+    </style>
   </head>
 
-  <body class="bg-[#fffcf0] font-sans text-center p-8 min-h-screen flex flex-col items-center">
-    <div id="gameContainer">
+  <body class="bg-[#fffcf0] font-sans text-center p-8 min-h-screen flex flex-col items-center overflow-hidden">
+    <div id="gameContainer" class="relative z-10">
       <h1 class="text-[#8b4513] text-4xl font-bold mb-4">Cookie Kiki</h1>
       
       <p id="scoreShow" class="text-5xl font-bold text-[#5d2e0a] mb-8">
@@ -17,17 +31,23 @@
       
       <button id="cookieBtn" class="text-[12rem] bg-transparent border-none cursor-pointer transition-transform duration-75 hover:scale-105 active:scale-95 select-none outline-none">
         🍪
-      </button> 
+      </button>
+
+      <div class="mt-8">
+        <button id="turboBtn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all active:scale-90">
+          🔥 TURBO MODE
+        </button>
+      </div>
     </div>
 
     <script>
       let cookies = 0;
       let grandmas = 0;
-      const GRANDMA_COST = 20;
       const GRANDMA_CPS = 1;
 
       const cookieBtn = document.getElementById("cookieBtn");
       const scoreDisplay = document.getElementById("score");
+      const turboBtn = document.getElementById("turboBtn");
 
       function updateUI() {
         scoreDisplay.textContent = Math.floor(cookies);
@@ -38,13 +58,28 @@
         updateUI();
       }
 
-      setInterval(function () {
+      function spawnRain() {
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => {
+            const cookie = document.createElement('div');
+            cookie.className = 'cookie-rain';
+            cookie.innerText = '🍪';
+            cookie.style.left = Math.random() * 100 + 'vw';
+            cookie.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            cookie.style.opacity = Math.random();
+            document.body.appendChild(cookie);
+
+            setTimeout(() => cookie.remove(), 3000);
+          }, i * 100);
+        }
+      }
+
+      setInterval(() => {
         cookies += grandmas * GRANDMA_CPS;
         updateUI();
       }, 1000);
 
-      // Deduct 1 cookie every 5 seconds if cookies > 0
-      setInterval(function () {
+      setInterval(() => {
         if (cookies > 0) {
           cookies -= 1;
           updateUI();
@@ -52,6 +87,12 @@
       }, 5000);
 
       cookieBtn.addEventListener("click", handleCookieClick);
+      
+      turboBtn.addEventListener("click", () => {
+        spawnRain();
+        cookies += 50; 
+        updateUI();
+      });
       
       updateUI();
     </script>
